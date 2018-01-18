@@ -10,6 +10,8 @@
 #include <dlib/cmd_line_parser.h>
 #include <dlib/opencv.h>
 #include<opencv2/opencv.hpp>
+#include <opencv2/core/core.hpp>        // Basic OpenCV structures (cv::Mat)
+#include <opencv2/highgui/highgui.hpp>
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
@@ -53,7 +55,7 @@ int main(int argc, char** argv) {
     }
 
     if (parser.number_of_arguments() == 0) {
-      cout << "You must give a list of input files." << endl;
+      cout << "You must give a list of input frame." << endl;
       cout << "\nTry the -h option for more information." << endl;
       return EXIT_FAILURE;
     }
@@ -61,8 +63,9 @@ int main(int argc, char** argv) {
     const unsigned long upsample_amount = get_option(parser, "u", 0);
 
     dlib::array<array2d<unsigned char> > images;
-
+      dlib::array<cv::Mat> matImages;
     images.resize(parser.number_of_arguments());
+      matImages.resize(parser.number_of_arguments());
 
       VideoCapture capture;
       if(parser.option("v")) {
@@ -70,17 +73,20 @@ int main(int argc, char** argv) {
           if(!capture.isOpened()){
               cout << "Unable to open video file";
               cin.get();
-              return 0;
+              return EXIT_FAILURE;
           }
+      } else{
+          cout << "You must pass the video path." << endl;
+          cout << "\nTry the -h option for more information." << endl;
+          return EXIT_FAILURE;
       }
 
     for (unsigned long i = 0; i < images.size(); ++i) {
       cout << "Load frame : " << parser[i] << endl;
         if(stoi(parser[i]) <= capture.get(CV_CAP_PROP_FRAME_COUNT)){
-            cv::Mat temp;
             capture.set(CV_CAP_PROP_POS_FRAMES,stoi(parser[i]));
-            capture.read(temp);
-            cv_image<bgr_pixel> cimg(temp);
+            capture.read(matImages[i]);
+            cv_image<bgr_pixel> cimg(matImages[i]);
             dlib::assign_image(images[i], cimg);
         }
     }
@@ -118,6 +124,11 @@ int main(int argc, char** argv) {
     std::vector<rect_detection> rects;
       //open file
       ofstream outFile(outputFile);
+      //export to video
+      Size S = Size((int) capture.get(CV_CAP_PROP_FRAME_WIDTH),    // Acquire input size
+                    (int) capture.get(CV_CAP_PROP_FRAME_HEIGHT));
+      VideoWriter outVideo;
+      outVideo.open("out.avi", CV_FOURCC('M', 'J', 'P', 'G'), capture.get(CV_CAP_PROP_FPS), S, true);
     for (unsigned long i = 0; i < images.size(); ++i) {
       evaluate_detectors(detectors, images[i], rects);
 
@@ -130,7 +141,10 @@ int main(int argc, char** argv) {
             outFile << rects[j].rect << " "  << signs[rects[j].weight_index].name << endl;
         win.add_overlay(rects[j].rect, signs[rects[j].weight_index].color,
                         signs[rects[j].weight_index].name);
+
       }
+        outVideo << matImages[i];
+
 
       if (parser.option("wait")) {
         cout << "Press any key to continue...";
