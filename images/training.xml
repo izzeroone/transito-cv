@@ -1,0 +1,138 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<?xml-stylesheet type='text/xsl' href='image_metadata_stylesheet.xsl'?>
+<dataset>
+<name>imglab dataset</name>
+<comment>Created by imglab tool.</comment>
+<images>
+  <image file='Stop/train/00000.ppm'>
+  </image>
+  <image file='Stop/train/00001.ppm'>
+  </image>
+  <image file='Stop/train/00002.ppm'>
+  </image>
+  <image file='Stop/train/00003.ppm'>
+  </image>
+  <image file='Stop/train/00004.ppm'>
+  </image>
+  <image file='Stop/train/00005.ppm'>
+  </image>
+  <image file='Stop/train/00006.ppm'>
+  </image>
+  <image file='Stop/train/00007.ppm'>
+  </image>
+  <image file='Stop/train/00008.ppm'>
+  </image>
+  <image file='Stop/train/00009.ppm'>
+  </image>
+  <image file='Stop/train/00010.ppm'>
+  </image>
+  <image file='Stop/train/00011.ppm'>
+  </image>
+  <image file='Stop/train/00012.ppm'>
+  </image>
+  <image file='Stop/train/00013.ppm'>
+  </image>
+  <image file='Stop/train/00014.ppm'>
+  </image>
+  <image file='Stop/train/00015.ppm'>
+  </image>
+  <image file='Stop/train/00016.ppm'>
+  </image>
+  <image file='Stop/train/00017.ppm'>
+  </image>
+  <image file='Stop/train/00018.ppm'>
+  </image>
+  <image file='Stop/train/00019.ppm'>
+  </image>
+  <image file='Stop/train/00020.ppm'>
+  </image>
+  <image file='Stop/train/00021.ppm'>
+  </image>
+  <image file='Stop/train/00375_00000.ppm'>
+  </image>
+  <image file='Stop/train/00375_00001.ppm'>
+  </image>
+  <image file='Stop/train/00375_00002.ppm'>
+  </image>
+  <image file='Stop/train/00478_00000.ppm'>
+  </image>
+  <image file='Stop/train/00478_00001.ppm'>
+  </image>
+  <image file='Stop/train/00478_00002.ppm'>
+  </image>
+  <image file='Stop/train/00546_00000.ppm'>
+  </image>
+  <image file='Stop/train/00546_00001.ppm'>
+  </image>
+  <image file='Stop/train/00546_00002.ppm'>
+  </image>
+  <image file='Stop/train/00554_00000.ppm'>
+  </image>
+  <image file='Stop/train/00554_00001.ppm'>
+  </image>
+  <image file='Stop/train/00554_00002.ppm'>
+  </image>
+  <image file='Stop/train/00684_00000.ppm'>
+  </image>
+  <image file='Stop/train/00684_00001.ppm'>
+  </image>
+  <image file='Stop/train/00684_00002.ppm'>
+  </image>
+  <image file='Stop/train/00685_00000.ppm'>
+  </image>
+  <image file='Stop/train/00685_00001.ppm'>
+  </image>
+  <image file='Stop/train/00685_00002.ppm'>
+  </image>
+  <image file='Stop/train/00715_00000.ppm'>
+  </image>
+  <image file='Stop/train/00715_00001.ppm'>
+  </image>
+  <image file='Stop/train/00715_00002.ppm'>
+  </image>
+  <image file='Stop/train/00715_00003.ppm'>
+  </image>
+  <image file='Stop/train/01162_00000.ppm'>
+  </image>
+  <image file='Stop/train/01162_00001.ppm'>
+  </image>
+  <image file='Stop/train/01162_00002.ppm'>
+  </image>
+  <image file='Stop/train/01258_00000.ppm'>
+  </image>
+  <image file='Stop/train/01258_00001.ppm'>
+  </image>
+  <image file='Stop/train/01258_00002.ppm'>
+  </image>
+  <image file='Stop/train/01811_00000.ppm'>
+  </image>
+  <image file='Stop/train/01811_00001.ppm'>
+  </image>
+  <image file='Stop/train/01811_00002.ppm'>
+  </image>
+  <image file='Stop/train/01832_00000.ppm'>
+  </image>
+  <image file='Stop/train/01832_00001.ppm'>
+  </image>
+  <image file='Stop/train/01832_00002.ppm'>
+  </image>
+  <image file='Stop/train/01868_00000.ppm'>
+  </image>
+  <image file='Stop/train/01868_00001.ppm'>
+  </image>
+  <image file='Stop/train/01868_00002.ppm'>
+  </image>
+  <image file='Stop/train/01920_00000.ppm'>
+  </image>
+  <image file='Stop/train/01920_00001.ppm'>
+  </image>
+  <image file='Stop/train/01920_00002.ppm'>
+  </image>
+  <image file='Stop/train/01951_00000.ppm'>
+  </image>
+  <image file='Stop/train/01951_00001.ppm'>
+  </image>
+  <image file='Stop/train/01951_00002.ppm'>
+  </image>
+</images>
+</dataset>
