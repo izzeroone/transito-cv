@@ -54,18 +54,10 @@ int main(int argc, char** argv) {
       return EXIT_SUCCESS;
     }
 
-    if (parser.number_of_arguments() == 0) {
-      cout << "You must give a list of input frame." << endl;
-      cout << "\nTry the -h option for more information." << endl;
-      return EXIT_FAILURE;
-    }
 
     const unsigned long upsample_amount = get_option(parser, "u", 0);
 
-    dlib::array<array2d<unsigned char> > images;
-      dlib::array<cv::Mat> matImages;
-    images.resize(parser.number_of_arguments());
-      matImages.resize(parser.number_of_arguments());
+
 
       VideoCapture capture;
       if(parser.option("v")) {
@@ -80,48 +72,6 @@ int main(int argc, char** argv) {
           cout << "\nTry the -h option for more information." << endl;
           return EXIT_FAILURE;
       }
-
-    for (unsigned long i = 0; i < images.size(); ++i) {
-      cout << "Load frame : " << parser[i] << endl;
-        if(stoi(parser[i]) <= capture.get(CV_CAP_PROP_FRAME_COUNT)){
-            capture.set(CV_CAP_PROP_POS_FRAMES,stoi(parser[i]));
-            capture.read(matImages[i]);
-            cv_image<bgr_pixel> cimg(matImages[i]);
-            dlib::assign_image(images[i], cimg);
-        }
-    }
-//    for (unsigned long i = 0; i < images.size(); ++i) {
-//      cout << "Load image : " << parser[i] << endl;
-//      load_image(images[i], parser[i]);
-//    }
-
-    for (unsigned long i = 0; i < upsample_amount; ++i) {
-      for (unsigned long j = 0; j < images.size(); ++j) {
-        pyramid_up(images[j]);
-      }
-    }
-
-    typedef scan_fhog_pyramid<pyramid_down<6> > image_scanner_type;
-
-    // Load SVM detectors
-    std::vector<TrafficSign> signs;
-    signs.push_back(TrafficSign("PARE", "../svm_detectors/pare_detector.svm",
-                                rgb_pixel(255,0,0)));
-    signs.push_back(TrafficSign("LOMBADA", "../svm_detectors/lombada_detector.svm",
-                                rgb_pixel(255,122,0)));
-    signs.push_back(TrafficSign("PEDESTRE", "../svm_detectors/pedestre_detector.svm",
-                                rgb_pixel(255,255,0)));
-
-    std::vector<object_detector<image_scanner_type> > detectors;
-
-    for (int i = 0; i < signs.size(); i++) {
-      object_detector<image_scanner_type> detector;
-      deserialize(signs[i].svm_path) >> detector;
-      detectors.push_back(detector);
-    }
-
-    image_window win;
-    std::vector<rect_detection> rects;
       //open file
       ofstream outFile(outputFile);
       //export to video
@@ -129,29 +79,96 @@ int main(int argc, char** argv) {
                     (int) capture.get(CV_CAP_PROP_FRAME_HEIGHT));
       VideoWriter outVideo;
       outVideo.open("out.avi", CV_FOURCC('M', 'J', 'P', 'G'), capture.get(CV_CAP_PROP_FPS), S, true);
-    for (unsigned long i = 0; i < images.size(); ++i) {
-      evaluate_detectors(detectors, images[i], rects);
 
-      // Put the image and detections into the window.
-      win.clear_overlay();
-      win.set_image(images[i]);
+      typedef scan_fhog_pyramid<pyramid_down<6> > image_scanner_type;
 
-      for (unsigned long j = 0; j < rects.size(); ++j) {
-          if(outFile.is_open())
-            outFile << rects[j].rect << " "  << signs[rects[j].weight_index].name << endl;
-        win.add_overlay(rects[j].rect, signs[rects[j].weight_index].color,
-                        signs[rects[j].weight_index].name);
+      // Load SVM detectors
+      std::vector<TrafficSign> signs;
+      signs.push_back(TrafficSign("CAM_RE_TRAI", "../svm_detectors/CamReTrai_detector.svm",
+                                  rgb_pixel(255,0,0)));
+      signs.push_back(TrafficSign("CAM_RE_PHAI", "../svm_detectors/CamRePhai_detector.svm",
+                                  rgb_pixel(255,0,0)));
+      signs.push_back(TrafficSign("MOT_CHIEU", "../svm_detectors/MotChieu_detector.svm",
+                                  rgb_pixel(255,0,0)));
+      signs.push_back(TrafficSign("CAM_NGUOC_CHIEU", "../svm_detectors/CamNguocChieu_detector.svm",
+                                  rgb_pixel(255,0,0)));
+      signs.push_back(TrafficSign("PARE", "../svm_detectors/pare_detector.svm",
+                                  rgb_pixel(255,0,0)));
+      signs.push_back(TrafficSign("LOMBADA", "../svm_detectors/lombada_detector.svm",
+                                  rgb_pixel(255,122,0)));
+      signs.push_back(TrafficSign("PEDESTRE", "../svm_detectors/pedestre_detector.svm",
+                                  rgb_pixel(255,255,0)));
+
+
+      std::vector<object_detector<image_scanner_type> > detectors;
+
+      for (int i = 0; i < signs.size(); i++) {
+          object_detector<image_scanner_type> detector;
+          deserialize(signs[i].svm_path) >> detector;
+          detectors.push_back(detector);
+      }
+
+      image_window win;
+      std::vector<rect_detection> rects;
+      array2d<unsigned char> dlibImage;
+      cv::Mat matImage;
+      cv::Mat mat2Image;
+      //namedWindow("img1",CV_WINDOW_FULLSCREEN);
+
+      int numFrame = capture.get(CV_CAP_PROP_FRAME_COUNT);
+
+      capture.set(CV_CAP_PROP_POS_FRAMES,100);
+      for (unsigned long i = 100; i < numFrame; i++) {
+          cout << "Load frame : " << i << endl;
+          //capture.set(CV_CAP_PROP_POS_FRAMES,i);
+          capture.read(matImage);
+          if(i % 5 != 0)
+              continue;
+          mat2Image = matImage;
+          cv_image<bgr_pixel> cimg(matImage);
+          dlib::assign_image(dlibImage, cimg);
+          //Check if frame number to detect
+//          for(int j = 0; j < parser.number_of_arguments(); j++){
+//              if(stoi(parser[j]) == i){
+//                  cout << "Detect frame : " << i << endl;
+//                  pyramid_up(dlibImage);
+//                  evaluate_detectors(detectors, dlibImage, rects);
+//                  for (unsigned long h = 0; h < rects.size(); ++h) {
+//                      if(outFile.is_open())
+//                  outFile << i << " " << rects[h].rect.left() << " " << rects[h].rect.bottom() << " " << rects[h].rect.right() << " " << rects[h].rect.top() << " " << signs[rects[j].weight_index].name << endl;
+//                    cv::rectangle(mat2Image, cv::Point( rects[h].rect.left(),  rects[h].rect.bottom()),cv::Point( rects[h].rect.right(),  rects[h].rect.top()), Scalar(0, 255, 0 ));
+//                    }
+//                  break;
+//              }
+//          }
+          pyramid_up(dlibImage);
+          evaluate_detectors(detectors, dlibImage, rects);
+          win.clear_overlay();
+          win.set_image(dlibImage);
+          cout << "Rect size : " << rects.size() << endl ;
+          for (unsigned long h = 0; h < rects.size(); ++h) {
+              if(outFile.is_open())
+                  outFile << i << " " << rects[h].rect.left() << " " << rects[h].rect.bottom() << " " << rects[h].rect.right() << " " << rects[h].rect.top() << " " << signs[rects[h].weight_index].name << endl;
+              win.add_overlay(rects[h].rect, signs[rects[h].weight_index].color,
+                              signs[rects[h].weight_index].name);
+              //cv::rectangle(mat2Image, cv::Point( rects[h].rect.left(),  rects[h].rect.bottom()),cv::Point( rects[h].rect.right(),  rects[h].rect.top()), Scalar(0, 255, 0 ));
+          }
+
+
+          //imshow("img1", mat2Image);
+          //cv::waitKey(20);
+
+
+          outVideo << mat2Image;
+
+
+          if (parser.option("wait")) {
+              cout << "Press any key to continue...";
+              cin.get();
+          }
 
       }
-        outVideo << matImages[i];
 
-
-      if (parser.option("wait")) {
-        cout << "Press any key to continue...";
-        cin.get();
-      }
-
-    }
       outFile.close();
   }
   catch (exception& e) {
